@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-# bitcoind-monitor.py
+# bitcannad-monitor.py
 #
+# Modified for BitCanna; Original work: 
 # An exporter for Prometheus and Bitcoin Core.
 #
 # Copyright 2018 Kevin M. Gallagher
