@@ -1,6 +1,6 @@
-# Bitcoin Core Prometheus Exporter
+# BitCanna Core Prometheus Exporter
 
-A [Prometheus] exporter for [Bitcoin Core] nodes written in python and packaged for running as a container.
+A [Prometheus] exporter for [BitCanna Core] nodes written in python and packaged for running as a container.
 
 A rudimentary Grafana [dashboard] is available in the [`dashboard/bitcoin-grafana.json`](dashboard/bitcoin-grafana.json)
 file.
@@ -19,16 +19,16 @@ The main script is a modified version of [`bitcoin-monitor.py`][source-gist], up
 # Run the container
 ```
 docker run \
-    --name=bitcoin-exporter \
+    --name=bitcanna-exporter \
     -p 8443:8443 \
-    -e BITCOIN_RPC_HOST=bitcoin-node \
-    -e BITCOIN_RPC_USER=alice \
-    -e BITCOIN_RPC_PASSWORD=DONT_USE_THIS_YOU_WILL_GET_ROBBED_8ak1gI25KFTvjovL3gAM967mies3E= \
-    jvstein/bitcoin-prometheus-exporter:v0.5.0
+    -e BITCANNA_RPC_HOST=bitcanna-node \
+    -e BITCANNA_RPC_USER=alice \
+    -e BITCANNA_RPC_PASSWORD=DONT_USE_THIS_YOU_WILL_GET_ROBBED_8ak1gI25KFTvjovL3gAM967mies3E= \
+    jvstein/bitcanna-prometheus-exporter:v0.5.0
 ```
 
 ## Basic Testing
-There's a [`docker-compose.yml`](docker-compose.yml) file in the repository that references a test bitcoin node. To
+There's a [`docker-compose.yml`](docker-compose.yml) file in the repository that references a test bitcanna node. To
 test changes to the exporter in docker, run the following commands.
 
 ```
@@ -37,7 +37,7 @@ docker-compose build
 docker-compose up
 ```
 
-If you see a lot of `ConnectionRefusedError` errors, run `chmod og+r test-bitcoin.conf`.
+If you see a lot of `ConnectionRefusedError` errors, run `chmod og+r test-bitcanna.conf`.
 
 # [Change Log](CHANGELOG.md)
 See the [`CHANGELOG.md`](CHANGELOG.md) file for changes.
