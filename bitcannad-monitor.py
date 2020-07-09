@@ -33,101 +33,101 @@ from urllib.parse import quote
 
 import riprova
 
-from bitcoin.rpc import InWarmupError, Proxy
+from bitcanna.rpc import InWarmupError, Proxy
 from prometheus_client import start_http_server, Gauge, Counter
 
 
-logger = logging.getLogger("bitcoin-exporter")
+logger = logging.getLogger("bitcanna-exporter")
 
 
-# Create Prometheus metrics to track bitcoind stats.
-BITCOIN_BLOCKS = Gauge("bitcoin_blocks", "Block height")
-BITCOIN_DIFFICULTY = Gauge("bitcoin_difficulty", "Difficulty")
-BITCOIN_PEERS = Gauge("bitcoin_peers", "Number of peers")
-BITCOIN_HASHPS_NEG1 = Gauge(
-    "bitcoin_hashps_neg1", "Estimated network hash rate per second since the last difficulty change"
+# Create Prometheus metrics to track bitcannad stats.
+bitcanna_BLOCKS = Gauge("bitcanna_blocks", "Block height")
+bitcanna_DIFFICULTY = Gauge("bitcanna_difficulty", "Difficulty")
+bitcanna_PEERS = Gauge("bitcanna_peers", "Number of peers")
+bitcanna_HASHPS_NEG1 = Gauge(
+    "bitcanna_hashps_neg1", "Estimated network hash rate per second since the last difficulty change"
 )
-BITCOIN_HASHPS_1 = Gauge(
-    "bitcoin_hashps_1", "Estimated network hash rate per second for the last block"
+bitcanna_HASHPS_1 = Gauge(
+    "bitcanna_hashps_1", "Estimated network hash rate per second for the last block"
 )
-BITCOIN_HASHPS = Gauge(
-    "bitcoin_hashps", "Estimated network hash rate per second for the last 120 blocks"
-)
-
-BITCOIN_ESTIMATED_SMART_FEE_GAUGES: Dict[int, Gauge] = {}
-
-BITCOIN_WARNINGS = Counter("bitcoin_warnings", "Number of network or blockchain warnings detected")
-BITCOIN_UPTIME = Gauge("bitcoin_uptime", "Number of seconds the Bitcoin daemon has been running")
-
-BITCOIN_MEMINFO_USED = Gauge("bitcoin_meminfo_used", "Number of bytes used")
-BITCOIN_MEMINFO_FREE = Gauge("bitcoin_meminfo_free", "Number of bytes available")
-BITCOIN_MEMINFO_TOTAL = Gauge("bitcoin_meminfo_total", "Number of bytes managed")
-BITCOIN_MEMINFO_LOCKED = Gauge("bitcoin_meminfo_locked", "Number of bytes locked")
-BITCOIN_MEMINFO_CHUNKS_USED = Gauge("bitcoin_meminfo_chunks_used", "Number of allocated chunks")
-BITCOIN_MEMINFO_CHUNKS_FREE = Gauge("bitcoin_meminfo_chunks_free", "Number of unused chunks")
-
-BITCOIN_MEMPOOL_BYTES = Gauge("bitcoin_mempool_bytes", "Size of mempool in bytes")
-BITCOIN_MEMPOOL_SIZE = Gauge(
-    "bitcoin_mempool_size", "Number of unconfirmed transactions in mempool"
-)
-BITCOIN_MEMPOOL_USAGE = Gauge("bitcoin_mempool_usage", "Total memory usage for the mempool")
-
-BITCOIN_LATEST_BLOCK_HEIGHT = Gauge(
-    "bitcoin_latest_block_height", "Height or index of latest block"
-)
-BITCOIN_LATEST_BLOCK_WEIGHT = Gauge(
-    "bitcoin_latest_block_weight", "Weight of latest block according to BIP 141"
-)
-BITCOIN_LATEST_BLOCK_SIZE = Gauge("bitcoin_latest_block_size", "Size of latest block in bytes")
-BITCOIN_LATEST_BLOCK_TXS = Gauge(
-    "bitcoin_latest_block_txs", "Number of transactions in latest block"
+bitcanna_HASHPS = Gauge(
+    "bitcanna_hashps", "Estimated network hash rate per second for the last 120 blocks"
 )
 
-BITCOIN_NUM_CHAINTIPS = Gauge("bitcoin_num_chaintips", "Number of known blockchain branches")
+bitcanna_ESTIMATED_SMART_FEE_GAUGES: Dict[int, Gauge] = {}
 
-BITCOIN_TOTAL_BYTES_RECV = Gauge("bitcoin_total_bytes_recv", "Total bytes received")
-BITCOIN_TOTAL_BYTES_SENT = Gauge("bitcoin_total_bytes_sent", "Total bytes sent")
+bitcanna_WARNINGS = Counter("bitcanna_warnings", "Number of network or blockchain warnings detected")
+bitcanna_UPTIME = Gauge("bitcanna_uptime", "Number of seconds the bitcanna daemon has been running")
 
-BITCOIN_LATEST_BLOCK_INPUTS = Gauge(
-    "bitcoin_latest_block_inputs", "Number of inputs in transactions of latest block"
+bitcanna_MEMINFO_USED = Gauge("bitcanna_meminfo_used", "Number of bytes used")
+bitcanna_MEMINFO_FREE = Gauge("bitcanna_meminfo_free", "Number of bytes available")
+bitcanna_MEMINFO_TOTAL = Gauge("bitcanna_meminfo_total", "Number of bytes managed")
+bitcanna_MEMINFO_LOCKED = Gauge("bitcanna_meminfo_locked", "Number of bytes locked")
+bitcanna_MEMINFO_CHUNKS_USED = Gauge("bitcanna_meminfo_chunks_used", "Number of allocated chunks")
+bitcanna_MEMINFO_CHUNKS_FREE = Gauge("bitcanna_meminfo_chunks_free", "Number of unused chunks")
+
+bitcanna_MEMPOOL_BYTES = Gauge("bitcanna_mempool_bytes", "Size of mempool in bytes")
+bitcanna_MEMPOOL_SIZE = Gauge(
+    "bitcanna_mempool_size", "Number of unconfirmed transactions in mempool"
 )
-BITCOIN_LATEST_BLOCK_OUTPUTS = Gauge(
-    "bitcoin_latest_block_outputs", "Number of outputs in transactions of latest block"
+bitcanna_MEMPOOL_USAGE = Gauge("bitcanna_mempool_usage", "Total memory usage for the mempool")
+
+bitcanna_LATEST_BLOCK_HEIGHT = Gauge(
+    "bitcanna_latest_block_height", "Height or index of latest block"
 )
-BITCOIN_LATEST_BLOCK_VALUE = Gauge(
-    "bitcoin_latest_block_value", "Bitcoin value of all transactions in the latest block"
+bitcanna_LATEST_BLOCK_WEIGHT = Gauge(
+    "bitcanna_latest_block_weight", "Weight of latest block according to BIP 141"
+)
+bitcanna_LATEST_BLOCK_SIZE = Gauge("bitcanna_latest_block_size", "Size of latest block in bytes")
+bitcanna_LATEST_BLOCK_TXS = Gauge(
+    "bitcanna_latest_block_txs", "Number of transactions in latest block"
 )
 
-BITCOIN_BAN_CREATED = Gauge(
-    "bitcoin_ban_created", "Time the ban was created", labelnames=["address", "reason"]
+bitcanna_NUM_CHAINTIPS = Gauge("bitcanna_num_chaintips", "Number of known blockchain branches")
+
+bitcanna_TOTAL_BYTES_RECV = Gauge("bitcanna_total_bytes_recv", "Total bytes received")
+bitcanna_TOTAL_BYTES_SENT = Gauge("bitcanna_total_bytes_sent", "Total bytes sent")
+
+bitcanna_LATEST_BLOCK_INPUTS = Gauge(
+    "bitcanna_latest_block_inputs", "Number of inputs in transactions of latest block"
 )
-BITCOIN_BANNED_UNTIL = Gauge(
-    "bitcoin_banned_until", "Time the ban expires", labelnames=["address", "reason"]
+bitcanna_LATEST_BLOCK_OUTPUTS = Gauge(
+    "bitcanna_latest_block_outputs", "Number of outputs in transactions of latest block"
+)
+bitcanna_LATEST_BLOCK_VALUE = Gauge(
+    "bitcanna_latest_block_value", "bitcanna value of all transactions in the latest block"
 )
 
-BITCOIN_SERVER_VERSION = Gauge("bitcoin_server_version", "The server version")
-BITCOIN_PROTOCOL_VERSION = Gauge("bitcoin_protocol_version", "The protocol version of the server")
+bitcanna_BAN_CREATED = Gauge(
+    "bitcanna_ban_created", "Time the ban was created", labelnames=["address", "reason"]
+)
+bitcanna_BANNED_UNTIL = Gauge(
+    "bitcanna_banned_until", "Time the ban expires", labelnames=["address", "reason"]
+)
 
-BITCOIN_SIZE_ON_DISK = Gauge("bitcoin_size_on_disk", "Estimated size of the block and undo files")
+bitcanna_SERVER_VERSION = Gauge("bitcanna_server_version", "The server version")
+bitcanna_PROTOCOL_VERSION = Gauge("bitcanna_protocol_version", "The protocol version of the server")
 
-BITCOIN_VERIFICATION_PROGRESS = Gauge(
-    "bitcoin_verification_progress", "Estimate of verification progress [0..1]"
+bitcanna_SIZE_ON_DISK = Gauge("bitcanna_size_on_disk", "Estimated size of the block and undo files")
+
+bitcanna_VERIFICATION_PROGRESS = Gauge(
+    "bitcanna_verification_progress", "Estimate of verification progress [0..1]"
 )
 
 EXPORTER_ERRORS = Counter(
-    "bitcoin_exporter_errors", "Number of errors encountered by the exporter", labelnames=["type"]
+    "bitcanna_exporter_errors", "Number of errors encountered by the exporter", labelnames=["type"]
 )
 PROCESS_TIME = Counter(
-    "bitcoin_exporter_process_time", "Time spent processing metrics from bitcoin node"
+    "bitcanna_exporter_process_time", "Time spent processing metrics from bitcanna node"
 )
 
 
-BITCOIN_RPC_SCHEME = os.environ.get("BITCOIN_RPC_SCHEME", "http")
-BITCOIN_RPC_HOST = os.environ.get("BITCOIN_RPC_HOST", "localhost")
-BITCOIN_RPC_PORT = os.environ.get("BITCOIN_RPC_PORT", "8332")
-BITCOIN_RPC_USER = os.environ.get("BITCOIN_RPC_USER")
-BITCOIN_RPC_PASSWORD = os.environ.get("BITCOIN_RPC_PASSWORD")
-BITCOIN_CONF_PATH = os.environ.get("BITCOIN_CONF_PATH")
+bitcanna_RPC_SCHEME = os.environ.get("bitcanna_RPC_SCHEME", "http")
+bitcanna_RPC_HOST = os.environ.get("bitcanna_RPC_HOST", "localhost")
+bitcanna_RPC_PORT = os.environ.get("bitcanna_RPC_PORT", "8332")
+bitcanna_RPC_USER = os.environ.get("bitcanna_RPC_USER")
+bitcanna_RPC_PASSWORD = os.environ.get("bitcanna_RPC_PASSWORD")
+bitcanna_CONF_PATH = os.environ.get("bitcanna_CONF_PATH")
 SMART_FEES = [int(f) for f in os.environ.get("SMARTFEE_BLOCKS", "2,3,5,20").split(",")]
 REFRESH_SECONDS = float(os.environ.get("REFRESH_SECONDS", "300"))
 METRICS_ADDR = os.environ.get("METRICS_ADDR", "")  # empty = any address
@@ -157,23 +157,23 @@ def error_evaluator(e: Exception) -> bool:
 def rpc_client_factory():
     # Configuration is done in this order of precedence:
     #   - Explicit config file.
-    #   - BITCOIN_RPC_USER and BITCOIN_RPC_PASSWORD environment variables.
-    #   - Default bitcoin config file (as handled by Proxy.__init__).
+    #   - bitcanna_RPC_USER and bitcanna_RPC_PASSWORD environment variables.
+    #   - Default bitcanna config file (as handled by Proxy.__init__).
     use_conf = (
-        (BITCOIN_CONF_PATH is not None)
-        or (BITCOIN_RPC_USER is None)
-        or (BITCOIN_RPC_PASSWORD is None)
+        (bitcanna_CONF_PATH is not None)
+        or (bitcanna_RPC_USER is None)
+        or (bitcanna_RPC_PASSWORD is None)
     )
 
     if use_conf:
-        logger.info("Using config file: %s", BITCOIN_CONF_PATH or "<default>")
-        return lambda: Proxy(btc_conf_file=BITCOIN_CONF_PATH, timeout=TIMEOUT)
+        logger.info("Using config file: %s", bitcanna_CONF_PATH or "<default>")
+        return lambda: Proxy(btc_conf_file=bitcanna_CONF_PATH, timeout=TIMEOUT)
     else:
-        host = BITCOIN_RPC_HOST
-        host = "{}:{}@{}".format(quote(BITCOIN_RPC_USER), quote(BITCOIN_RPC_PASSWORD), host)
-        if BITCOIN_RPC_PORT:
-            host = f"{host}:{BITCOIN_RPC_PORT}"
-        service_url = f"{BITCOIN_RPC_SCHEME}://{host}"
+        host = bitcanna_RPC_HOST
+        host = "{}:{}@{}".format(quote(bitcanna_RPC_USER), quote(bitcanna_RPC_PASSWORD), host)
+        if bitcanna_RPC_PORT:
+            host = f"{host}:{bitcanna_RPC_PORT}"
+        service_url = f"{bitcanna_RPC_SCHEME}://{host}"
         logger.info("Using environment configuration")
         return lambda: Proxy(service_url=service_url, timeout=TIMEOUT)
 
@@ -188,7 +188,7 @@ def rpc_client():
     on_retry=on_retry,
     error_evaluator=error_evaluator,
 )
-def bitcoinrpc(*args) -> RpcResult:
+def bitcannarpc(*args) -> RpcResult:
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug("RPC call: " + " ".join(str(a) for a in args))
 
@@ -200,93 +200,93 @@ def bitcoinrpc(*args) -> RpcResult:
 
 def get_block(block_hash: str):
     try:
-        block = bitcoinrpc("getblock", block_hash, 2)
+        block = bitcannarpc("getblock", block_hash, 2)
     except Exception:
-        logger.exception("Failed to retrieve block " + block_hash + " from bitcoind.")
+        logger.exception("Failed to retrieve block " + block_hash + " from bitcannad.")
         return None
     return block
 
 
 def smartfee_gauge(num_blocks: int) -> Gauge:
-    gauge = BITCOIN_ESTIMATED_SMART_FEE_GAUGES.get(num_blocks)
+    gauge = bitcanna_ESTIMATED_SMART_FEE_GAUGES.get(num_blocks)
     if gauge is None:
         gauge = Gauge(
-            "bitcoin_est_smart_fee_%d" % num_blocks,
+            "bitcanna_est_smart_fee_%d" % num_blocks,
             "Estimated smart fee per kilobyte for confirmation in %d blocks" % num_blocks,
         )
-        BITCOIN_ESTIMATED_SMART_FEE_GAUGES[num_blocks] = gauge
+        bitcanna_ESTIMATED_SMART_FEE_GAUGES[num_blocks] = gauge
     return gauge
 
 
 def do_smartfee(num_blocks: int) -> None:
-    smartfee = bitcoinrpc("estimatesmartfee", num_blocks).get("feerate")
+    smartfee = bitcannarpc("estimatesmartfee", num_blocks).get("feerate")
     if smartfee is not None:
         gauge = smartfee_gauge(num_blocks)
         gauge.set(smartfee)
 
 
 def refresh_metrics() -> None:
-    uptime = int(bitcoinrpc("uptime"))
-    meminfo = bitcoinrpc("getmemoryinfo", "stats")["locked"]
-    blockchaininfo = bitcoinrpc("getblockchaininfo")
-    networkinfo = bitcoinrpc("getnetworkinfo")
-    chaintips = len(bitcoinrpc("getchaintips"))
-    mempool = bitcoinrpc("getmempoolinfo")
-    nettotals = bitcoinrpc("getnettotals")
+    uptime = int(bitcannarpc("uptime"))
+    meminfo = bitcannarpc("getmemoryinfo", "stats")["locked"]
+    blockchaininfo = bitcannarpc("getblockchaininfo")
+    networkinfo = bitcannarpc("getnetworkinfo")
+    chaintips = len(bitcannarpc("getchaintips"))
+    mempool = bitcannarpc("getmempoolinfo")
+    nettotals = bitcannarpc("getnettotals")
     latest_block = get_block(str(blockchaininfo["bestblockhash"]))
-    hashps_120 = float(bitcoinrpc("getnetworkhashps", 120))  # 120 is the default
-    hashps_neg1 = float(bitcoinrpc("getnetworkhashps", -1))
-    hashps_1 = float(bitcoinrpc("getnetworkhashps", 1))
+    hashps_120 = float(bitcannarpc("getnetworkhashps", 120))  # 120 is the default
+    hashps_neg1 = float(bitcannarpc("getnetworkhashps", -1))
+    hashps_1 = float(bitcannarpc("getnetworkhashps", 1))
 
-    banned = bitcoinrpc("listbanned")
+    banned = bitcannarpc("listbanned")
 
-    BITCOIN_UPTIME.set(uptime)
-    BITCOIN_BLOCKS.set(blockchaininfo["blocks"])
-    BITCOIN_PEERS.set(networkinfo["connections"])
-    BITCOIN_DIFFICULTY.set(blockchaininfo["difficulty"])
-    BITCOIN_HASHPS.set(hashps_120)
-    BITCOIN_HASHPS_NEG1.set(hashps_neg1)
-    BITCOIN_HASHPS_1.set(hashps_1)
-    BITCOIN_SERVER_VERSION.set(networkinfo["version"])
-    BITCOIN_PROTOCOL_VERSION.set(networkinfo["protocolversion"])
-    BITCOIN_SIZE_ON_DISK.set(blockchaininfo["size_on_disk"])
-    BITCOIN_VERIFICATION_PROGRESS.set(blockchaininfo["verificationprogress"])
+    bitcanna_UPTIME.set(uptime)
+    bitcanna_BLOCKS.set(blockchaininfo["blocks"])
+    bitcanna_PEERS.set(networkinfo["connections"])
+    bitcanna_DIFFICULTY.set(blockchaininfo["difficulty"])
+    bitcanna_HASHPS.set(hashps_120)
+    bitcanna_HASHPS_NEG1.set(hashps_neg1)
+    bitcanna_HASHPS_1.set(hashps_1)
+    bitcanna_SERVER_VERSION.set(networkinfo["version"])
+    bitcanna_PROTOCOL_VERSION.set(networkinfo["protocolversion"])
+    bitcanna_SIZE_ON_DISK.set(blockchaininfo["size_on_disk"])
+    bitcanna_VERIFICATION_PROGRESS.set(blockchaininfo["verificationprogress"])
 
     for smartfee in SMART_FEES:
         do_smartfee(smartfee)
 
     for ban in banned:
-        BITCOIN_BAN_CREATED.labels(address=ban["address"], reason=ban["ban_reason"]).set(
+        bitcanna_BAN_CREATED.labels(address=ban["address"], reason=ban["ban_reason"]).set(
             ban["ban_created"]
         )
-        BITCOIN_BANNED_UNTIL.labels(address=ban["address"], reason=ban["ban_reason"]).set(
+        bitcanna_BANNED_UNTIL.labels(address=ban["address"], reason=ban["ban_reason"]).set(
             ban["banned_until"]
         )
 
     if networkinfo["warnings"]:
-        BITCOIN_WARNINGS.inc()
+        bitcanna_WARNINGS.inc()
 
-    BITCOIN_NUM_CHAINTIPS.set(chaintips)
+    bitcanna_NUM_CHAINTIPS.set(chaintips)
 
-    BITCOIN_MEMINFO_USED.set(meminfo["used"])
-    BITCOIN_MEMINFO_FREE.set(meminfo["free"])
-    BITCOIN_MEMINFO_TOTAL.set(meminfo["total"])
-    BITCOIN_MEMINFO_LOCKED.set(meminfo["locked"])
-    BITCOIN_MEMINFO_CHUNKS_USED.set(meminfo["chunks_used"])
-    BITCOIN_MEMINFO_CHUNKS_FREE.set(meminfo["chunks_free"])
+    bitcanna_MEMINFO_USED.set(meminfo["used"])
+    bitcanna_MEMINFO_FREE.set(meminfo["free"])
+    bitcanna_MEMINFO_TOTAL.set(meminfo["total"])
+    bitcanna_MEMINFO_LOCKED.set(meminfo["locked"])
+    bitcanna_MEMINFO_CHUNKS_USED.set(meminfo["chunks_used"])
+    bitcanna_MEMINFO_CHUNKS_FREE.set(meminfo["chunks_free"])
 
-    BITCOIN_MEMPOOL_BYTES.set(mempool["bytes"])
-    BITCOIN_MEMPOOL_SIZE.set(mempool["size"])
-    BITCOIN_MEMPOOL_USAGE.set(mempool["usage"])
+    bitcanna_MEMPOOL_BYTES.set(mempool["bytes"])
+    bitcanna_MEMPOOL_SIZE.set(mempool["size"])
+    bitcanna_MEMPOOL_USAGE.set(mempool["usage"])
 
-    BITCOIN_TOTAL_BYTES_RECV.set(nettotals["totalbytesrecv"])
-    BITCOIN_TOTAL_BYTES_SENT.set(nettotals["totalbytessent"])
+    bitcanna_TOTAL_BYTES_RECV.set(nettotals["totalbytesrecv"])
+    bitcanna_TOTAL_BYTES_SENT.set(nettotals["totalbytessent"])
 
     if latest_block is not None:
-        BITCOIN_LATEST_BLOCK_SIZE.set(latest_block["size"])
-        BITCOIN_LATEST_BLOCK_TXS.set(latest_block["nTx"])
-        BITCOIN_LATEST_BLOCK_HEIGHT.set(latest_block["height"])
-        BITCOIN_LATEST_BLOCK_WEIGHT.set(latest_block["weight"])
+        bitcanna_LATEST_BLOCK_SIZE.set(latest_block["size"])
+        bitcanna_LATEST_BLOCK_TXS.set(latest_block["nTx"])
+        bitcanna_LATEST_BLOCK_HEIGHT.set(latest_block["height"])
+        bitcanna_LATEST_BLOCK_WEIGHT.set(latest_block["weight"])
         inputs, outputs = 0, 0
         value = 0
         for tx in latest_block["tx"]:
@@ -296,9 +296,9 @@ def refresh_metrics() -> None:
             outputs += o
             value += sum(o["value"] for o in tx["vout"])
 
-        BITCOIN_LATEST_BLOCK_INPUTS.set(inputs)
-        BITCOIN_LATEST_BLOCK_OUTPUTS.set(outputs)
-        BITCOIN_LATEST_BLOCK_VALUE.set(value)
+        bitcanna_LATEST_BLOCK_INPUTS.set(inputs)
+        bitcanna_LATEST_BLOCK_OUTPUTS.set(outputs)
+        bitcanna_LATEST_BLOCK_VALUE.set(value)
 
 
 def sigterm_handler(signal, frame) -> None:
@@ -313,7 +313,7 @@ def exception_count(e: Exception) -> None:
 
 
 def main():
-    # Set up logging to look similar to bitcoin logs (UTC).
+    # Set up logging to look similar to bitcanna logs (UTC).
     logging.basicConfig(
         format="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%dT%H:%M:%SZ"
     )
