@@ -89,25 +89,25 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "floor(sum(rate(bitcoin_blocks[3h])) * 3600 * 24)",
+          "expr": "floor(sum(rate(bitcanna_blocks[3h])) * 3600 * 24)",
           "hide": false,
           "legendFormat": "3h",
           "refId": "C"
         },
         {
-          "expr": "floor(sum(rate(bitcoin_blocks[6h])) * 3600 * 24)",
+          "expr": "floor(sum(rate(bitcanna_blocks[6h])) * 3600 * 24)",
           "hide": false,
           "legendFormat": "6h",
           "refId": "E"
         },
         {
-          "expr": "floor(sum(rate(bitcoin_blocks[12h])) * 3600 * 24)",
+          "expr": "floor(sum(rate(bitcanna_blocks[12h])) * 3600 * 24)",
           "hide": false,
           "legendFormat": "12h",
           "refId": "A"
         },
         {
-          "expr": "floor(sum(rate(bitcoin_blocks[7d])) * 3600 * 24)",
+          "expr": "floor(sum(rate(bitcanna_blocks[7d])) * 3600 * 24)",
           "legendFormat": "7d",
           "refId": "B"
         }
@@ -195,7 +195,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(bitcoin_difficulty)",
+          "expr": "avg(bitcanna_difficulty)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "difficulty",
@@ -286,14 +286,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(bitcoin_hashps)",
+          "expr": "avg(bitcanna_hashps)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "120-blocks",
           "refId": "B"
         },
         {
-          "expr": "avg(bitcoin_hashps_neg1)",
+          "expr": "avg(bitcanna_hashps_neg1)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "last-difficulty",
@@ -384,7 +384,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bitcoin_latest_block_value)",
+          "expr": "sum(bitcanna_latest_block_value)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "BTC",
@@ -474,7 +474,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(bitcoin_num_chaintips)",
+          "expr": "avg(bitcanna_num_chaintips)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "tips",
@@ -566,14 +566,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bitcoin_total_bytes_sent[5m]))",
+          "expr": "sum(irate(bitcanna_total_bytes_sent[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "sent",
           "refId": "A"
         },
         {
-          "expr": "-sum(irate(bitcoin_total_bytes_recv[10m]))",
+          "expr": "-sum(irate(bitcanna_total_bytes_recv[10m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "received",
@@ -664,7 +664,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(bitcoin_est_smart_fee_2)",
+          "expr": "avg(bitcanna_est_smart_fee_2)",
           "format": "time_series",
           "interval": "2m",
           "intervalFactor": 1,
@@ -672,21 +672,21 @@
           "refId": "A"
         },
         {
-          "expr": "avg(bitcoin_est_smart_fee_20)",
+          "expr": "avg(bitcanna_est_smart_fee_20)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "20-blocks",
           "refId": "B"
         },
         {
-          "expr": "avg(bitcoin_est_smart_fee_3)",
+          "expr": "avg(bitcanna_est_smart_fee_3)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "3-blocks",
           "refId": "C"
         },
         {
-          "expr": "avg(bitcoin_est_smart_fee_5)",
+          "expr": "avg(bitcanna_est_smart_fee_5)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "5-blocks",
@@ -740,7 +740,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_PROMETHEUS}",
-      "description": "The Bitcoin protocol and server versions.",
+      "description": "The Bitcanna protocol and server versions.",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -785,14 +785,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(bitcoin_protocol_version)",
+          "expr": "avg(bitcanna_protocol_version)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "protocol",
           "refId": "A"
         },
         {
-          "expr": "avg(bitcoin_server_version)",
+          "expr": "avg(bitcanna_server_version)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "server",
@@ -883,14 +883,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "count(bitcoin_banned_until) by (reason)",
+          "expr": "count(bitcanna_banned_until) by (reason)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "ban - {{ reason }}",
           "refId": "B"
         },
         {
-          "expr": "sum(bitcoin_peers)",
+          "expr": "sum(bitcanna_peers)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "peers",
@@ -944,7 +944,7 @@
   "schemaVersion": 20,
   "style": "dark",
   "tags": [
-    "bitcoin"
+    "bitcanna"
   ],
   "templating": {
     "list": []
@@ -979,7 +979,7 @@
     ]
   },
   "timezone": "",
-  "title": "Bitcoin",
+  "title": "Bitcanna",
   "uid": "OTLC2jHWz",
   "version": 1
 }
