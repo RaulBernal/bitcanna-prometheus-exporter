@@ -33,7 +33,7 @@ from urllib.parse import quote
 
 import riprova
 
-from bitcanna.rpc import InWarmupError, Proxy
+from bitcoin.rpc import InWarmupError, Proxy
 from prometheus_client import start_http_server, Gauge, Counter
 
 
