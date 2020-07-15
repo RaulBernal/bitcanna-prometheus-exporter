@@ -202,7 +202,7 @@ def bitcannarpc(*args) -> RpcResult:
 
 def get_block(block_hash: str):
     try:
-        block = bitcannarpc("getblock", block_hash, 2)
+        block = bitcannarpc("block", block_hash, 2)  #getblock by block
     except Exception:
         logger.exception("Failed to retrieve block " + block_hash + " from bitcannad.")
         return None
