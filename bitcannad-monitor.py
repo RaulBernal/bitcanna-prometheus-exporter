@@ -56,7 +56,7 @@ BITCANNA_HASHPS = Gauge(
     "bitcanna_hashps", "Estimated network hash rate per second for the last 120 blocks"
 )
 
-BITCANNA_ESTIMATED_SMART_FEE_GAUGES: Dict[int, Gauge] = {}
+#BITCANNA_ESTIMATED_SMART_FEE_GAUGES: Dict[int, Gauge] = {}
 
 BITCANNA_WARNINGS = Counter("bitcanna_warnings", "Number of network or blockchain warnings detected")
 #BITCANNA_UPTIME = Gauge("bitcanna_uptime", "Number of seconds the Bitcanna daemon has been running")
@@ -130,7 +130,7 @@ BITCANNA_RPC_PORT = os.environ.get("BITCANNA_RPC_PORT", "8332")
 BITCANNA_RPC_USER = os.environ.get("BITCANNA_RPC_USER")
 BITCANNA_RPC_PASSWORD = os.environ.get("BITCANNA_RPC_PASSWORD")
 BITCANNA_CONF_PATH = os.environ.get("BITCANNA_CONF_PATH")
-SMART_FEES = [int(f) for f in os.environ.get("SMARTFEE_BLOCKS", "2,3,5,20").split(",")]
+#SMART_FEES = [int(f) for f in os.environ.get("SMARTFEE_BLOCKS", "2,3,5,20").split(",")]
 REFRESH_SECONDS = float(os.environ.get("REFRESH_SECONDS", "300"))
 METRICS_ADDR = os.environ.get("METRICS_ADDR", "")  # empty = any address
 METRICS_PORT = int(os.environ.get("METRICS_PORT", "8334"))
@@ -255,8 +255,8 @@ def refresh_metrics() -> None:
     #BITCANNA_SIZE_ON_DISK.set(blockchaininfo["size_on_disk"])
     #BITCANNA_VERIFICATION_PROGRESS.set(blockchaininfo["verificationprogress"])
 
-    for smartfee in SMART_FEES:
-        do_smartfee(smartfee)
+    #for smartfee in SMART_FEES:
+    #    do_smartfee(smartfee)
 
     for ban in banned:
         BITCANNA_BAN_CREATED.labels(address=ban["address"], reason=ban["ban_reason"]).set(
