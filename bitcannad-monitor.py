@@ -236,7 +236,7 @@ def refresh_metrics() -> None:
     chaintips = len(bitcannarpc("getchaintips"))
     mempool = bitcannarpc("getmempoolinfo")
     nettotals = bitcannarpc("getnettotals")
-    latest_block = get_block(str(bestblockhash)
+    latest_block = get_block(str(bestblockhash))
     hashps_120 = float(bitcannarpc("getnetworkhashps", 120))  # 120 is the default
     hashps_neg1 = float(bitcannarpc("getnetworkhashps", -1))
     hashps_1 = float(bitcannarpc("getnetworkhashps", 1))
