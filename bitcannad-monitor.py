@@ -287,9 +287,9 @@ def refresh_metrics() -> None:
 
     if latest_block is not None:
         BITCANNA_LATEST_BLOCK_SIZE.set(latest_block["size"])
-        BITCANNA_LATEST_BLOCK_TXS.set(latest_block["nTx"])
+        BITCANNA_LATEST_BLOCK_TXS.set(len(latest_block["Tx"]))     --> buscar de otro sitio
         BITCANNA_LATEST_BLOCK_HEIGHT.set(latest_block["height"])
-        BITCANNA_LATEST_BLOCK_WEIGHT.set(latest_block["weight"])
+        #BITCANNA_LATEST_BLOCK_WEIGHT.set(latest_block["weight"])
         inputs, outputs = 0, 0
         value = 0
         for tx in latest_block["tx"]:
