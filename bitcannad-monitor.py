@@ -266,8 +266,8 @@ def refresh_metrics() -> None:
     #        ban["banned_until"]
     #    )
 
-    if networkinfo["warnings"]:
-        BITCANNA_WARNINGS.inc()
+    #if networkinfo["warnings"]:
+    #    BITCANNA_WARNINGS.inc()
 
     BITCANNA_NUM_CHAINTIPS.set(chaintips)
 
