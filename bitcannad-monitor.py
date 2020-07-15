@@ -202,29 +202,29 @@ def bitcannarpc(*args) -> RpcResult:
 
 def get_block(block_hash: str):
     try:
-        block = bitcannarpc("getblock", block_hash, 2)
+        block = bitcannarpc("getblock", block_hash, true)
     except Exception:
         logger.exception("Failed to retrieve block " + block_hash + " from bitcannad.")
         return None
     return block
 
 
-def smartfee_gauge(num_blocks: int) -> Gauge:
-    gauge = BITCANNA_ESTIMATED_SMART_FEE_GAUGES.get(num_blocks)
-    if gauge is None:
-        gauge = Gauge(
-            "bitcanna_est_smart_fee_%d" % num_blocks,
-            "Estimated smart fee per kilobyte for confirmation in %d blocks" % num_blocks,
-        )
-        BITCANNA_ESTIMATED_SMART_FEE_GAUGES[num_blocks] = gauge
-    return gauge
+#def smartfee_gauge(num_blocks: int) -> Gauge:
+#    gauge = BITCANNA_ESTIMATED_SMART_FEE_GAUGES.get(num_blocks)
+#    if gauge is None:
+#        gauge = Gauge(
+#            "bitcanna_est_smart_fee_%d" % num_blocks,
+#            "Estimated smart fee per kilobyte for confirmation in %d blocks" % num_blocks,
+#        )
+#        BITCANNA_ESTIMATED_SMART_FEE_GAUGES[num_blocks] = gauge
+#    return gauge
 
 
-def do_smartfee(num_blocks: int) -> None:
-    smartfee = bitcannarpc("estimatesmartfee", num_blocks).get("feerate")
-    if smartfee is not None:
-        gauge = smartfee_gauge(num_blocks)
-        gauge.set(smartfee)
+#def do_smartfee(num_blocks: int) -> None:
+#    smartfee = bitcannarpc("estimatesmartfee", num_blocks).get("feerate")
+#    if smartfee is not None:
+#        gauge = smartfee_gauge(num_blocks)
+#        gauge.set(smartfee)
 
 
 def refresh_metrics() -> None:
@@ -236,7 +236,7 @@ def refresh_metrics() -> None:
     chaintips = len(bitcannarpc("getchaintips"))
     mempool = bitcannarpc("getmempoolinfo")
     nettotals = bitcannarpc("getnettotals")
-    latest_block = get_block(str(bestblockhash))
+    latest_block = get_block(bestblockhash)
     hashps_120 = float(bitcannarpc("getnetworkhashps", 120))  # 120 is the default
     hashps_neg1 = float(bitcannarpc("getnetworkhashps", -1))
     hashps_1 = float(bitcannarpc("getnetworkhashps", 1))
@@ -253,7 +253,7 @@ def refresh_metrics() -> None:
     BITCANNA_SERVER_VERSION.set(networkinfo["version"])
     BITCANNA_PROTOCOL_VERSION.set(networkinfo["protocolversion"])
     #BITCANNA_SIZE_ON_DISK.set(blockchaininfo["size_on_disk"])
-    #BITCANNA_VERIFICATION_PROGRESS.set(blockchaininfo["verificationprogress"])
+    BITCANNA_VERIFICATION_PROGRESS.set(blockchaininfo["verificationprogress"])
 
     #for smartfee in SMART_FEES:
     #    do_smartfee(smartfee)
