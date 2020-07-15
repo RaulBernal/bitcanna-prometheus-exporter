@@ -202,7 +202,7 @@ def bitcannarpc(*args) -> RpcResult:
 
 def get_block(block_hash: str):
     try:
-        block = bitcannarpc("block", block_hash, 2)  #getblock by block
+        block = bitcannarpc("getblock", block_hash, 2)
     except Exception:
         logger.exception("Failed to retrieve block " + block_hash + " from bitcannad.")
         return None
@@ -231,11 +231,12 @@ def refresh_metrics() -> None:
     #uptime = int(bitcannarpc("uptime"))
     #meminfo = bitcannarpc("getmemoryinfo", "stats")["locked"]
     blockchaininfo = bitcannarpc("getblockchaininfo")
+    bestblockhash = bitcannarpc("getbestblockhash")
     networkinfo = bitcannarpc("getnetworkinfo")
     chaintips = len(bitcannarpc("getchaintips"))
     mempool = bitcannarpc("getmempoolinfo")
     nettotals = bitcannarpc("getnettotals")
-    latest_block = get_block(str(blockchaininfo["bestblockhash"]))
+    latest_block = get_block(str(bestblockhash)
     hashps_120 = float(bitcannarpc("getnetworkhashps", 120))  # 120 is the default
     hashps_neg1 = float(bitcannarpc("getnetworkhashps", -1))
     hashps_1 = float(bitcannarpc("getnetworkhashps", 1))
