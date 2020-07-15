@@ -258,13 +258,13 @@ def refresh_metrics() -> None:
     #for smartfee in SMART_FEES:
     #    do_smartfee(smartfee)
 
-    for ban in banned:
-        BITCANNA_BAN_CREATED.labels(address=ban["address"], reason=ban["ban_reason"]).set(
-            ban["ban_created"]
-        )
-        BITCANNA_BANNED_UNTIL.labels(address=ban["address"], reason=ban["ban_reason"]).set(
-            ban["banned_until"]
-        )
+    #for ban in banned:
+    #    BITCANNA_BAN_CREATED.labels(address=ban["address"], reason=ban["ban_reason"]).set(
+    #        ban["ban_created"]
+    #    )
+    #    BITCANNA_BANNED_UNTIL.labels(address=ban["address"], reason=ban["ban_reason"]).set(
+    #        ban["banned_until"]
+    #    )
 
     if networkinfo["warnings"]:
         BITCANNA_WARNINGS.inc()
