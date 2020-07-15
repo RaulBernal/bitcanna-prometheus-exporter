@@ -244,7 +244,7 @@ def refresh_metrics() -> None:
     #banned = bitcannarpc("listbanned")
 
     #BITCANNA_UPTIME.set(uptime)
-    BITCANNA_BLOCKS.set(blockchaininfo["blocks"])
+    #BITCANNA_BLOCKS.set(blockchaininfo["blocks"])
     BITCANNA_PEERS.set(networkinfo["connections"])
     BITCANNA_DIFFICULTY.set(blockchaininfo["difficulty"])
     BITCANNA_HASHPS.set(hashps_120)
