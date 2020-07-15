@@ -287,21 +287,21 @@ def refresh_metrics() -> None:
 
     if latest_block is not None:
         BITCANNA_LATEST_BLOCK_SIZE.set(latest_block["size"])
-        BITCANNA_LATEST_BLOCK_TXS.set(len(latest_block["tx"])) #    --> buscar de otro sitio
+        BITCANNA_LATEST_BLOCK_TXS.set(len(latest_block["tx"]))
         BITCANNA_LATEST_BLOCK_HEIGHT.set(latest_block["height"])
         #BITCANNA_LATEST_BLOCK_WEIGHT.set(latest_block["weight"])
-        inputs, outputs = 0, 0
-        value = 0
-        for tx in latest_block["tx"]:
-            i = len(tx["vin"])
-            inputs += i
-            o = len(tx["vout"])
-            outputs += o
-            value += sum(o["value"] for o in tx["vout"])
+        #inputs, outputs = 0, 0  #    --> buscar de otro sitio, en el script de rewards > InfluxDB
+        #value = 0
+        #for tx in latest_block["tx"]:
+        #    i = len(tx["vin"])
+        #    inputs += i
+        #    o = len(tx["vout"])
+        #    outputs += o
+        #    value += sum(o["value"] for o in tx["vout"])
 
-        BITCANNA_LATEST_BLOCK_INPUTS.set(inputs)
-        BITCANNA_LATEST_BLOCK_OUTPUTS.set(outputs)
-        BITCANNA_LATEST_BLOCK_VALUE.set(value)
+        #BITCANNA_LATEST_BLOCK_INPUTS.set(inputs)
+        #BITCANNA_LATEST_BLOCK_OUTPUTS.set(outputs)
+        #BITCANNA_LATEST_BLOCK_VALUE.set(value)
 
 
 def sigterm_handler(signal, frame) -> None:
