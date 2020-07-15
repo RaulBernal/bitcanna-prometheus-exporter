@@ -229,7 +229,7 @@ def do_smartfee(num_blocks: int) -> None:
 
 def refresh_metrics() -> None:
     #uptime = int(bitcannarpc("uptime"))
-    meminfo = bitcannarpc("getmemoryinfo", "stats")["locked"]
+    #meminfo = bitcannarpc("getmemoryinfo", "stats")["locked"]
     blockchaininfo = bitcannarpc("getblockchaininfo")
     networkinfo = bitcannarpc("getnetworkinfo")
     chaintips = len(bitcannarpc("getchaintips"))
@@ -240,7 +240,7 @@ def refresh_metrics() -> None:
     hashps_neg1 = float(bitcannarpc("getnetworkhashps", -1))
     hashps_1 = float(bitcannarpc("getnetworkhashps", 1))
 
-    banned = bitcannarpc("listbanned")
+    #banned = bitcannarpc("listbanned")
 
     #BITCANNA_UPTIME.set(uptime)
     BITCANNA_BLOCKS.set(blockchaininfo["blocks"])
@@ -251,8 +251,8 @@ def refresh_metrics() -> None:
     BITCANNA_HASHPS_1.set(hashps_1)
     BITCANNA_SERVER_VERSION.set(networkinfo["version"])
     BITCANNA_PROTOCOL_VERSION.set(networkinfo["protocolversion"])
-    BITCANNA_SIZE_ON_DISK.set(blockchaininfo["size_on_disk"])
-    BITCANNA_VERIFICATION_PROGRESS.set(blockchaininfo["verificationprogress"])
+    #BITCANNA_SIZE_ON_DISK.set(blockchaininfo["size_on_disk"])
+    #BITCANNA_VERIFICATION_PROGRESS.set(blockchaininfo["verificationprogress"])
 
     for smartfee in SMART_FEES:
         do_smartfee(smartfee)
@@ -270,16 +270,16 @@ def refresh_metrics() -> None:
 
     BITCANNA_NUM_CHAINTIPS.set(chaintips)
 
-    BITCANNA_MEMINFO_USED.set(meminfo["used"])
-    BITCANNA_MEMINFO_FREE.set(meminfo["free"])
-    BITCANNA_MEMINFO_TOTAL.set(meminfo["total"])
-    BITCANNA_MEMINFO_LOCKED.set(meminfo["locked"])
-    BITCANNA_MEMINFO_CHUNKS_USED.set(meminfo["chunks_used"])
-    BITCANNA_MEMINFO_CHUNKS_FREE.set(meminfo["chunks_free"])
+    #BITCANNA_MEMINFO_USED.set(meminfo["used"])
+    #BITCANNA_MEMINFO_FREE.set(meminfo["free"])
+    #BITCANNA_MEMINFO_TOTAL.set(meminfo["total"])
+    #BITCANNA_MEMINFO_LOCKED.set(meminfo["locked"])
+    #BITCANNA_MEMINFO_CHUNKS_USED.set(meminfo["chunks_used"])
+    #BITCANNA_MEMINFO_CHUNKS_FREE.set(meminfo["chunks_free"])
 
     BITCANNA_MEMPOOL_BYTES.set(mempool["bytes"])
     BITCANNA_MEMPOOL_SIZE.set(mempool["size"])
-    BITCANNA_MEMPOOL_USAGE.set(mempool["usage"])
+    #BITCANNA_MEMPOOL_USAGE.set(mempool["usage"])
 
     BITCANNA_TOTAL_BYTES_RECV.set(nettotals["totalbytesrecv"])
     BITCANNA_TOTAL_BYTES_SENT.set(nettotals["totalbytessent"])
