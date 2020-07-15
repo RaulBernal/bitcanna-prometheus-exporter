@@ -14,6 +14,8 @@
 #   prometheus_client: Apache 2.0
 #   python-bitcoinlib: LGPLv3
 #   riprova: MIT
+#
+# nano /home/user/.local/lib/python3.6/site-packages/bitcoin/rpc.py and change BitCanna default folders
 
 import json
 import logging
@@ -31,10 +33,10 @@ from typing import List
 from typing import Union
 from urllib.parse import quote
 
-import riprova
+import riprova   #pip3 install riprova
 
-from bitcoin.rpc import InWarmupError, Proxy
-from prometheus_client import start_http_server, Gauge, Counter
+from bitcoin.rpc import InWarmupError, Proxy  #pip3 install python-bitcoinlib
+from prometheus_client import start_http_server, Gauge, Counter #pip3 install prometheus_client
 
 
 logger = logging.getLogger("bitcanna-exporter")
@@ -57,7 +59,7 @@ BITCANNA_HASHPS = Gauge(
 BITCANNA_ESTIMATED_SMART_FEE_GAUGES: Dict[int, Gauge] = {}
 
 BITCANNA_WARNINGS = Counter("bitcanna_warnings", "Number of network or blockchain warnings detected")
-BITCANNA_UPTIME = Gauge("bitcanna_uptime", "Number of seconds the Bitcanna daemon has been running")
+#BITCANNA_UPTIME = Gauge("bitcanna_uptime", "Number of seconds the Bitcanna daemon has been running")
 
 BITCANNA_MEMINFO_USED = Gauge("bitcanna_meminfo_used", "Number of bytes used")
 BITCANNA_MEMINFO_FREE = Gauge("bitcanna_meminfo_free", "Number of bytes available")
@@ -226,7 +228,7 @@ def do_smartfee(num_blocks: int) -> None:
 
 
 def refresh_metrics() -> None:
-    uptime = int(bitcannarpc("uptime"))
+    #uptime = int(bitcannarpc("uptime"))
     meminfo = bitcannarpc("getmemoryinfo", "stats")["locked"]
     blockchaininfo = bitcannarpc("getblockchaininfo")
     networkinfo = bitcannarpc("getnetworkinfo")
@@ -240,7 +242,7 @@ def refresh_metrics() -> None:
 
     banned = bitcannarpc("listbanned")
 
-    BITCANNA_UPTIME.set(uptime)
+    #BITCANNA_UPTIME.set(uptime)
     BITCANNA_BLOCKS.set(blockchaininfo["blocks"])
     BITCANNA_PEERS.set(networkinfo["connections"])
     BITCANNA_DIFFICULTY.set(blockchaininfo["difficulty"])
