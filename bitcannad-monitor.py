@@ -85,7 +85,7 @@ BITCANNA_LATEST_BLOCK_TXS = Gauge(
     "bitcanna_latest_block_txs", "Number of transactions in latest block"
 )
 
-BITCANNA_NUM_CHAINTIPS = Gauge("bitcanna_num_chaintips", "Number of known blockchain branches")
+#BITCANNA_NUM_CHAINTIPS = Gauge("bitcanna_num_chaintips", "Number of known blockchain branches")
 
 BITCANNA_TOTAL_BYTES_RECV = Gauge("bitcanna_total_bytes_recv", "Total bytes received")
 BITCANNA_TOTAL_BYTES_SENT = Gauge("bitcanna_total_bytes_sent", "Total bytes sent")
@@ -233,7 +233,7 @@ def refresh_metrics() -> None:
     blockchaininfo = bitcannarpc("getblockchaininfo")
     bestblockhash = bitcannarpc("getbestblockhash")
     networkinfo = bitcannarpc("getnetworkinfo")
-    chaintips = len(bitcannarpc("getchaintips"))
+    #chaintips = len(bitcannarpc("getchaintips")) #get a lot of cpu load
     mempool = bitcannarpc("getmempoolinfo")
     nettotals = bitcannarpc("getnettotals")
     latest_block = get_block(bestblockhash)
@@ -269,7 +269,7 @@ def refresh_metrics() -> None:
     #if networkinfo["warnings"]:
     #    BITCANNA_WARNINGS.inc()
 
-    BITCANNA_NUM_CHAINTIPS.set(chaintips)
+    #BITCANNA_NUM_CHAINTIPS.set(chaintips)
 
     #BITCANNA_MEMINFO_USED.set(meminfo["used"])
     #BITCANNA_MEMINFO_FREE.set(meminfo["free"])
