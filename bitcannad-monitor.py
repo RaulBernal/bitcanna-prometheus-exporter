@@ -131,7 +131,7 @@ BITCANNA_RPC_USER = os.environ.get("BITCANNA_RPC_USER")
 BITCANNA_RPC_PASSWORD = os.environ.get("BITCANNA_RPC_PASSWORD")
 BITCANNA_CONF_PATH = os.environ.get("BITCANNA_CONF_PATH")
 #SMART_FEES = [int(f) for f in os.environ.get("SMARTFEE_BLOCKS", "2,3,5,20").split(",")]
-REFRESH_SECONDS = float(os.environ.get("REFRESH_SECONDS", "300"))
+REFRESH_SECONDS = float(os.environ.get("REFRESH_SECONDS", "35"))
 METRICS_ADDR = os.environ.get("METRICS_ADDR", "")  # empty = any address
 METRICS_PORT = int(os.environ.get("METRICS_PORT", "8334"))
 RETRIES = int(os.environ.get("RETRIES", 5))
